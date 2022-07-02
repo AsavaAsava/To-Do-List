@@ -65,7 +65,7 @@ const addTodo = () => {
 	idField.value = "";
 	timeField.value = "";
 	bodyField.value = "";
-	setTimeout(displayAllTodos(),2000);
+	setTimeout(displayAllTodos(),4000);
 }
 
 const editTodo = (itemId) => {
@@ -99,7 +99,7 @@ const deleteTodo = (itemId) => {
 	Todos = Todos.filter(todo => todo.id != itemId);
 	axios
 	.delete(`http://localhost:8000/posts/${itemId}`)
-	.then(setTimeout(displayAllTodos(),2000))
+	.then(setTimeout(displayAllTodos(),4000))
 	
 }
 
@@ -113,7 +113,7 @@ const updateTodo = () => {
 		body:newbody,
 		status: "Not complete"
 	})
-	.then(setTimeout(displayAllTodos(),2000))
+	.then(setTimeout(displayAllTodos(),4000))
 
 	idField.value = "";
 	timeField.value = "";
@@ -128,7 +128,7 @@ const markTodoAsComplete = (itemId) => {
 	.patch(`http://localhost:8000/posts/${itemId}`,{
 		status:"Complete"
 	})
-	.then(setTimeout(displayAllTodos(),2000))
+	.then(setTimeout(displayAllTodos(),4000))
 }
 
 todoList.addEventListener('click', (e)=>{
