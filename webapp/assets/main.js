@@ -15,7 +15,7 @@ let Todos = [];
 
 const displayAllTodos = () => {
 	todoList.innerHTML = ""
-	axios.get("http://localhost:3000/posts").then(res => {	
+	axios.get("http://localhost:8000/posts").then(res => {	
 		Todos = [...res.data]
 		if (Todos.length == 0) {
 
@@ -52,17 +52,6 @@ const displayAllTodos = () => {
 
 displayAllTodos();
 
-// const addTodo = () => {
-// 	const id = idField.value;
-// 	const timestamp = timeField.value;
-// 	const body = bodyField.value;
-// 	const status = "Not complete";
-// 	Todos.push({id,timestamp, body, status})
-// 	idField.value = "";
-// 	timeField.value = "";
-// 	bodyField.value = "";
-// 	displayAllTodos();
-// }
 
 const addTodo = () => {
 	const id = idField.value;
@@ -70,13 +59,13 @@ const addTodo = () => {
 	const body = bodyField.value;
 	const status = "Not complete";
 	axios
-    .post('http://localhost:3000/posts', {id,timestamp, body, status})
+    .post('http://localhost:8000/posts', {id,timestamp, body, status})
     .then(res => console.log(res.data))
     .catch(err => console.error(err));
 	idField.value = "";
 	timeField.value = "";
 	bodyField.value = "";
-	displayAllTodos();
+	setTimeout(displayAllTodos(),2000);
 }
 
 const editTodo = (itemId) => {
@@ -87,6 +76,7 @@ const editTodo = (itemId) => {
 	idField.value = id;
 	timeField.value = getTimeStamp();
 	bodyField.value = body;
+
 }
 
 const generateID = () => {
@@ -107,40 +97,38 @@ const addNewTodo = () => {
 
 const deleteTodo = (itemId) => {
 	Todos = Todos.filter(todo => todo.id != itemId);
-	displayAllTodos();
+	axios
+	.delete(`http://localhost:8000/posts/${itemId}`)
+	.then(setTimeout(displayAllTodos(),2000))
+	
 }
 
 const updateTodo = () => {
-	const todos = Todos.map(todo=>{
-		if(todo.id === idField.value){
-			todo.status = "Not complete";
-			todo.body = bodyField.value;
-			todo.timestamp = timeField.value;
-			return todo;
-		}else{
-			return todo;
-		}
+	
+	let itemId = idField.value
+	let newbody = bodyField.value
+	Todos = Todos.filter(todo => todo.id != itemId);
+	axios
+	.patch(`http://localhost:8000/posts/${itemId}`,{
+		body:newbody,
+		status: "Not complete"
 	})
-	Todos = todos;
+	.then(setTimeout(displayAllTodos(),2000))
+
 	idField.value = "";
 	timeField.value = "";
 	bodyField.value = "";
-	displayAllTodos();
 	updateTodoButton.style.display = "none"
 	createTodoButton.style.display = "block"
 }
 
 const markTodoAsComplete = (itemId) => {
-	const todos = Todos.map(todo=>{
-		if(todo.id === itemId){
-			todo.status = "Complete";
-			return todo;
-		}else{
-			return todo;
-		}
+	Todos = Todos.filter(todo => todo.id != itemId);
+	axios
+	.patch(`http://localhost:8000/posts/${itemId}`,{
+		status:"Complete"
 	})
-	Todos = todos;
-	displayAllTodos();
+	.then(setTimeout(displayAllTodos(),2000))
 }
 
 todoList.addEventListener('click', (e)=>{
